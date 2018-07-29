@@ -21,7 +21,7 @@ fn main() -> Result<(), Error> {
     println!("{:?}", opts);
     let mut stack = parse(::std::fs::File::open(opts.file)?)?;
     println!("{:?}", stack);
-    println!("{:?}", stack.collapse());
+    println!("{:?}", stack.pop());
     Ok(())
 }
 

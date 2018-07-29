@@ -36,16 +36,4 @@ impl Stack {
     pub fn pop(&mut self) -> Result<Token, Error> {
         self.0.pop().ok_or(Error::NotEnoughValues)
     }
-
-    pub fn step(&mut self) -> Result<(), Error> {
-        let op = self.0.pop().ok_or_else(|| Error::NotEnoughValues)?;
-
-        op.apply(self)
-    }
-    pub fn collapse(&mut self) -> Result<Token, Error> {
-        while self.0.len() > 1 {
-            self.step()?;
-        }
-        self.pop()
-    }
 }
