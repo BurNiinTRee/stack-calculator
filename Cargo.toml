@@ -1,0 +1,10 @@
+[package]
+name = "stack-calculator"
+version = "0.1.0"
+authors = ["Lars Mühmel <larsmuehmel@web.de>"]
+
+[dependencies]
+failure = "0.1.1"
+failure_derive = "0.1.1"
+downcast-rs = "1.0.3"
+structopt = "0.2.10"
