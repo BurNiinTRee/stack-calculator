@@ -9,7 +9,7 @@ pub enum Error {
     NotEnoughValues,
     /// This Variant is to be given, when an Operator encounters a Token of the wrong type on the Stack
     #[fail(display = "token is not the expected type: {:?}", token,)]
-    WrongType { token: Token },
+    WrongParser { token: Token },
     /// This Variant is to be given, when an Operator doesn't modify the Stack, but should be pushed as is
     #[fail(display = "token is not an operator: {:?}", token)]
     NotCallable { token: Token },
@@ -81,7 +81,7 @@ pub trait Value: Downcast + ::std::fmt::Debug + ::std::fmt::Display + Sync + Sen
 
 impl_downcast!(Value);
 
-pub trait Type: ::std::fmt::Debug {
+pub trait Parser: ::std::fmt::Debug {
     /// Returns a `String`, which contains a regular expression as defined in the regex crate,
     /// that only matches a `str` if parsing it with `parse` would succeed
     fn parse_hint(&self) -> String;
@@ -107,22 +107,22 @@ pub trait Type: ::std::fmt::Debug {
 
 #[derive(Debug)]
 /// A parser, capable of turning str-representations of tokens into actual [`Token`]s.
-/// The [`Type`] of each type of [`Token`], which should be available in the `Parser`
+/// The [`Parser`] of each type of [`Token`], which should be available in the `Parser`
 /// have to be added to it before it can create such [`Token`]s.
-pub struct Parser {
-    objects: Vec<Box<dyn Type>>,
+pub struct ParserAggregator {
+    objects: Vec<Box<dyn Parser>>,
 }
 
-impl Parser {
+impl ParserAggregator {
     /// Creates a new empty `Parser`, incapable of parsing anything
-    pub fn new() -> Parser {
-        Parser {
+    pub fn new() -> ParserAggregator {
+        ParserAggregator {
             objects: Vec::new(),
         }
     }
-    /// Adds a [`Type`] to the `Parser`.
-    /// If the capabilities of multiple [`Type`]s overlap, the newest one takes precedence.
-    pub fn push<M: Type + 'static>(&mut self, object: M) {
+    /// Adds a [`Parser`] to the `Parser`.
+    /// If the capabilities of multiple [`Parser`]s overlap, the newest one takes precedence.
+    pub fn push<M: Parser + 'static>(&mut self, object: M) {
         self.objects.push(Box::new(object));
     }
     /// Applies the `Parser` to an input, returning a [`Token`], which can be pushed onto a [`Stack`]
@@ -135,7 +135,7 @@ impl Parser {
     }
 }
 
-impl Type for Parser {
+impl Parser for ParserAggregator {
     fn parse_hint(&self) -> String {
         let mut re_string = String::new();
         for type_object in &self.objects {
@@ -147,6 +147,6 @@ impl Type for Parser {
         re_string
     }
     fn try_parse(&self, input: &str) -> Option<Token> {
-        Parser::try_parse(self, input)
+        ParserAggregator::try_parse(self, input)
     }
 }

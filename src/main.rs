@@ -34,7 +34,7 @@ fn main() -> Result<(), Error> {
     Ok(())
 }
 
-fn exec_stdin(mut stack: Stack, parser: Parser) -> Result<Stack, Error> {
+fn exec_stdin<P: Parser>(mut stack: Stack, parser: P) -> Result<Stack, Error> {
     let mut rl = Editor::<()>::new();
     loop {
         let readline = rl.readline(">>> ");
@@ -61,10 +61,10 @@ fn exec_stdin(mut stack: Stack, parser: Parser) -> Result<Stack, Error> {
     Ok(stack)
 }
 
-fn exec_file<P: AsRef<::std::path::Path>>(
+fn exec_file<P: Parser, Path: AsRef<::std::path::Path>>(
     mut stack: Stack,
-    parser: Parser,
-    path: P,
+    parser: P,
+    path: Path,
     debug: bool,
 ) -> Result<Stack, Error> {
     let input = BufReader::new(File::open(path)?);

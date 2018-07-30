@@ -1,13 +1,13 @@
-//! This module contains [`Type`]s for simple integer arithmetic,
+//! This module contains [`Parser`]s for simple integer arithmetic,
 //! supporting addition, substraction, multiplication and division.
 //!
-//! [`Type`]: ../machine/trait.Type.html
+//! [`Parser`]: ../machine/trait.Parser.html
 
 use machine::*;
 use std::fmt;
 
-pub fn arithmetic_module() -> Parser {
-    let mut parser = Parser::new();
+pub fn arithmetic_module() -> ParserAggregator {
+    let mut parser = ParserAggregator::new();
     parser.push(AdditionMeta);
     parser.push(SubstractionMeta);
     parser.push(MultiplicationMeta);
@@ -36,7 +36,7 @@ impl fmt::Display for Pop {
 #[derive(Debug)]
 pub struct PopMeta;
 
-impl Type for PopMeta {
+impl Parser for PopMeta {
     fn parse_hint(&self) -> String {
         r"pop".into()
     }
@@ -64,12 +64,12 @@ impl fmt::Display for Integer {
 }
 
 #[derive(Debug)]
-/// A [`Type`] representing integers
+/// A [`Parser`] representing integers
 ///
-/// [`Type`]: ../machine/trait.Type.html
+/// [`Parser`]: ../machine/trait.Parser.html
 pub struct IntegerMeta;
 
-impl Type for IntegerMeta {
+impl Parser for IntegerMeta {
     fn parse_hint(&self) -> String {
         r"^\d+$".into()
     }
@@ -89,11 +89,11 @@ impl Value for Addition {
         let Integer(a): Integer = at
             .downcast_ref()
             .cloned()
-            .ok_or(Error::WrongType { token: at })?;
+            .ok_or(Error::WrongParser { token: at })?;
         let Integer(b): Integer = bt
             .downcast_ref()
             .cloned()
-            .ok_or(Error::WrongType { token: bt })?;
+            .ok_or(Error::WrongParser { token: bt })?;
 
         stack.push(Token::new(Integer(a + b)))?;
         Ok(())
@@ -107,12 +107,12 @@ impl fmt::Display for Addition {
 }
 
 #[derive(Debug)]
-/// A [`Type`] capable of adding two [`Integer`]s
+/// A [`Parser`] capable of adding two [`Integer`]s
 ///
-/// [`Type`]: ../machine/trait.Type.html
+/// [`Parser`]: ../machine/trait.Parser.html
 pub struct AdditionMeta;
 
-impl Type for AdditionMeta {
+impl Parser for AdditionMeta {
     fn parse_hint(&self) -> String {
         r"^\+$".into()
     }
@@ -132,11 +132,11 @@ impl Value for Substraction {
         let Integer(a): Integer = at
             .downcast_ref()
             .cloned()
-            .ok_or(Error::WrongType { token: at })?;
+            .ok_or(Error::WrongParser { token: at })?;
         let Integer(b): Integer = bt
             .downcast_ref()
             .cloned()
-            .ok_or(Error::WrongType { token: bt })?;
+            .ok_or(Error::WrongParser { token: bt })?;
 
         stack.push(Token::new(Integer(a - b)))?;
         Ok(())
@@ -150,12 +150,12 @@ impl fmt::Display for Substraction {
 }
 
 #[derive(Debug)]
-/// A [`Type`] capable of substracting two [`Integer`]s
+/// A [`Parser`] capable of substracting two [`Integer`]s
 ///
-/// [`Type`]: ../machine/trait.Type.html
+/// [`Parser`]: ../machine/trait.Parser.html
 pub struct SubstractionMeta;
 
-impl Type for SubstractionMeta {
+impl Parser for SubstractionMeta {
     fn parse_hint(&self) -> String {
         r"^-$".into()
     }
@@ -175,11 +175,11 @@ impl Value for Multiplication {
         let Integer(a): Integer = at
             .downcast_ref()
             .cloned()
-            .ok_or(Error::WrongType { token: at })?;
+            .ok_or(Error::WrongParser { token: at })?;
         let Integer(b): Integer = bt
             .downcast_ref()
             .cloned()
-            .ok_or(Error::WrongType { token: bt })?;
+            .ok_or(Error::WrongParser { token: bt })?;
 
         stack.push(Token::new(Integer(a * b)))?;
         Ok(())
@@ -193,12 +193,12 @@ impl fmt::Display for Multiplication {
 }
 
 #[derive(Debug)]
-/// A [`Type`] capable of multiplying two [`Integer`]s
+/// A [`Parser`] capable of multiplying two [`Integer`]s
 ///
-/// [`Type`]: ../machine/trait.Type.html
+/// [`Parser`]: ../machine/trait.Parser.html
 pub struct MultiplicationMeta;
 
-impl Type for MultiplicationMeta {
+impl Parser for MultiplicationMeta {
     fn parse_hint(&self) -> String {
         r"^\*$".into()
     }
@@ -217,11 +217,11 @@ impl Value for Division {
         let Integer(a): Integer = at
             .downcast_ref()
             .cloned()
-            .ok_or(Error::WrongType { token: at })?;
+            .ok_or(Error::WrongParser { token: at })?;
         let Integer(b): Integer = bt
             .downcast_ref()
             .cloned()
-            .ok_or(Error::WrongType { token: bt })?;
+            .ok_or(Error::WrongParser { token: bt })?;
 
         stack.push(Token::new(Integer(a / b)))?;
         Ok(())
@@ -235,12 +235,12 @@ impl fmt::Display for Division {
 }
 
 #[derive(Debug)]
-/// A [`Type`] capable of dividing two [`Integer`]s
+/// A [`Parser`] capable of dividing two [`Integer`]s
 ///
-/// [`Type`]: ../machine/trait.Type.html
+/// [`Parser`]: ../machine/trait.Parser.html
 pub struct DivisionMeta;
 
-impl Type for DivisionMeta {
+impl Parser for DivisionMeta {
     fn parse_hint(&self) -> String {
         r"^/$".into()
     }
