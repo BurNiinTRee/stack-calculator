@@ -82,8 +82,9 @@ pub trait Value: Downcast + ::std::fmt::Debug + ::std::fmt::Display + Sync + Sen
 impl_downcast!(Value);
 
 pub trait Type: ::std::fmt::Debug {
-    /// Returns a `Regex`, that only matches a `str` if parsing it with `parse` would succeed
-    fn parse_hint(&self) -> Regex;
+    /// Returns a `String`, which contains a regular expression as defined in the regex crate,
+    /// that only matches a `str` if parsing it with `parse` would succeed
+    fn parse_hint(&self) -> String;
     /// Parses `input` into a Token of this type
     /// # Panics
     /// Panics if the input can't be parsed into the associated type
@@ -95,7 +96,7 @@ pub trait Type: ::std::fmt::Debug {
     /// # Panics
     /// Panics if `parse_hint` approves of an input but parse doesn't
     fn try_parse(&self, input: &str) -> Option<Token> {
-        let re = self.parse_hint();
+        let re = Regex::new(&self.parse_hint()).unwrap();
         if re.is_match(input) {
             Some(self.parse(input))
         } else {
@@ -135,7 +136,7 @@ impl Parser {
 }
 
 impl Type for Parser {
-    fn parse_hint(&self) -> Regex {
+    fn parse_hint(&self) -> String {
         let mut re_string = String::new();
         for type_object in &self.objects {
             re_string.push('(');
@@ -143,7 +144,7 @@ impl Type for Parser {
             re_string.push_str(")|");
         }
         re_string.pop();
-        Regex::new(&re_string).unwrap()
+        re_string
     }
     fn try_parse(&self, input: &str) -> Option<Token> {
         Parser::try_parse(self, input)

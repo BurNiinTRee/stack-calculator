@@ -4,7 +4,6 @@
 //! [`Type`]: ../machine/trait.Type.html
 
 use machine::*;
-use regex::Regex;
 use std::fmt;
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -31,8 +30,8 @@ impl fmt::Display for Integer {
 pub struct IntegerMeta;
 
 impl Type for IntegerMeta {
-    fn parse_hint(&self) -> Regex {
-        Regex::new(r"^\d+$").unwrap()
+    fn parse_hint(&self) -> String {
+        r"^\d+$".into()
     }
     fn parse(&self, input: &str) -> Token {
         Token::new(Integer(input.parse().unwrap()))
@@ -74,8 +73,8 @@ impl fmt::Display for Addition {
 pub struct AdditionMeta;
 
 impl Type for AdditionMeta {
-    fn parse_hint(&self) -> Regex {
-        Regex::new(r"^\+$").unwrap()
+    fn parse_hint(&self) -> String {
+        r"^\+$".into()
     }
     fn parse(&self, _: &str) -> Token {
         Token::new(Addition)
@@ -117,8 +116,8 @@ impl fmt::Display for Substraction {
 pub struct SubstractionMeta;
 
 impl Type for SubstractionMeta {
-    fn parse_hint(&self) -> Regex {
-        Regex::new(r"^-$").unwrap()
+    fn parse_hint(&self) -> String {
+        r"^-$".into()
     }
     fn parse(&self, _: &str) -> Token {
         Token::new(Substraction)
@@ -160,8 +159,8 @@ impl fmt::Display for Multiplication {
 pub struct MultiplicationMeta;
 
 impl Type for MultiplicationMeta {
-    fn parse_hint(&self) -> Regex {
-        Regex::new(r"^\*$").unwrap()
+    fn parse_hint(&self) -> String {
+        r"^\*$".into()
     }
     fn parse(&self, _: &str) -> Token {
         Token::new(Multiplication)
@@ -202,8 +201,8 @@ impl fmt::Display for Division {
 pub struct DivisionMeta;
 
 impl Type for DivisionMeta {
-    fn parse_hint(&self) -> Regex {
-        Regex::new(r"^/$").unwrap()
+    fn parse_hint(&self) -> String {
+        r"^/$".into()
     }
     fn parse(&self, _: &str) -> Token {
         Token::new(Division)
