@@ -20,3 +20,10 @@ if this string can be parsed by the `Parser`, and a method which then actually p
 ## The Arithmetic Module
 This module acts as a sort-of standard library. It provides various structs,
 implementing `Parser` and `Value`, ready to be added to a `ParserAggregator`.
+
+
+
+## Todos
+* Graphical Interfaces in Wasm and maybe Qt
+* Other Tokens that can introduce macros (A distinction between macros and functions doesn't really make sense in a pure interpreter), to create DSLs in the language itself as opposed to implementing them in Rust
+* Other constructs like loops and conditionals (I don't know what they could look like)
