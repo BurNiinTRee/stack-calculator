@@ -6,6 +6,46 @@
 use machine::*;
 use std::fmt;
 
+pub fn arithmetic_module() -> Parser {
+    let mut parser = Parser::new();
+    parser.push(AdditionMeta);
+    parser.push(SubstractionMeta);
+    parser.push(MultiplicationMeta);
+    parser.push(DivisionMeta);
+    parser.push(IntegerMeta);
+    parser.push(PopMeta);
+    parser
+}
+
+#[derive(Debug)]
+pub struct Pop;
+
+impl Value for Pop {
+    fn apply(&self, stack: &mut Stack) -> Result<(), Error> {
+        stack.pop()?;
+        Ok(())
+    }
+}
+
+impl fmt::Display for Pop {
+    fn fmt(&self, _: &mut fmt::Formatter) -> Result<(), fmt::Error> {
+        Ok(())
+    }
+}
+
+#[derive(Debug)]
+pub struct PopMeta;
+
+impl Type for PopMeta {
+    fn parse_hint(&self) -> String {
+        r"pop".into()
+    }
+
+    fn parse(&self, _: &str) -> Token {
+        Token::new(Pop)
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq)]
 struct Integer(pub i64);
 

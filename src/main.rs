@@ -25,7 +25,7 @@ struct Opt {
 
 fn main() -> Result<(), Error> {
     let opts = Opt::from_args();
-    let parser = get_parser();
+    let parser = arithmetic_module();
     let stack = Stack::new();
     match opts.file {
         Some(path) => exec_file(stack, parser, path, opts.debug),
@@ -83,16 +83,4 @@ fn exec_file<P: AsRef<::std::path::Path>>(
         }
     }
     Ok(stack)
-}
-
-fn get_parser() -> Parser {
-    let mut parser = Parser::new();
-    parser.push(AdditionMeta);
-    parser.push(SubstractionMeta);
-    parser.push(MultiplicationMeta);
-    parser.push(DivisionMeta);
-    parser.push(IntegerMeta);
-    let mut real_parser = Parser::new();
-    real_parser.push(parser);
-    real_parser
 }
