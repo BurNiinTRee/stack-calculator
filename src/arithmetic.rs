@@ -1,8 +1,13 @@
+//! This module contains [`MetaObject`]s for simple integer arithmetic,
+//! supporting addition, substraction, multiplication and division.
+//!
+//! [`MetaObject`]: ../machine/trait.MetaObject.html
+
 use machine::*;
 use regex::Regex;
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-pub struct Integer(pub i64);
+struct Integer(pub i64);
 
 impl Value for Integer {
     fn apply(&self, _: &mut Stack) -> Result<(), Error> {
@@ -13,6 +18,9 @@ impl Value for Integer {
 }
 
 #[derive(Debug)]
+/// A [`MetaObject`] representing integers
+///
+/// [`MetaObject`]: ../machine/trait.MetaObject.html
 pub struct IntegerMeta;
 
 impl MetaObject for IntegerMeta {
@@ -25,7 +33,7 @@ impl MetaObject for IntegerMeta {
 }
 
 #[derive(Debug)]
-pub struct Addition;
+struct Addition;
 
 impl Value for Addition {
     fn apply(&self, stack: &mut Stack) -> Result<(), Error> {
@@ -47,6 +55,9 @@ impl Value for Addition {
 }
 
 #[derive(Debug)]
+/// A [`MetaObject`] capable of adding two [`Integer`]s
+///
+/// [`MetaObject`]: ../machine/trait.MetaObject.html
 pub struct AdditionMeta;
 
 impl MetaObject for AdditionMeta {
@@ -59,7 +70,7 @@ impl MetaObject for AdditionMeta {
 }
 
 #[derive(Debug)]
-pub struct Substraction;
+struct Substraction;
 
 impl Value for Substraction {
     fn apply(&self, stack: &mut Stack) -> Result<(), Error> {
@@ -80,6 +91,9 @@ impl Value for Substraction {
     }
 }
 #[derive(Debug)]
+/// A [`MetaObject`] capable of substracting two [`Integer`]s
+///
+/// [`MetaObject`]: ../machine/trait.MetaObject.html
 pub struct SubstractionMeta;
 
 impl MetaObject for SubstractionMeta {
@@ -92,7 +106,7 @@ impl MetaObject for SubstractionMeta {
 }
 
 #[derive(Debug)]
-pub struct Multiplication;
+struct Multiplication;
 
 impl Value for Multiplication {
     fn apply(&self, stack: &mut Stack) -> Result<(), Error> {
@@ -113,6 +127,9 @@ impl Value for Multiplication {
     }
 }
 #[derive(Debug)]
+/// A [`MetaObject`] capable of multiplying two [`Integer`]s
+///
+/// [`MetaObject`]: ../machine/trait.MetaObject.html
 pub struct MultiplicationMeta;
 
 impl MetaObject for MultiplicationMeta {
@@ -124,7 +141,7 @@ impl MetaObject for MultiplicationMeta {
     }
 }
 #[derive(Debug)]
-pub struct Division;
+struct Division;
 
 impl Value for Division {
     fn apply(&self, stack: &mut Stack) -> Result<(), Error> {
@@ -145,6 +162,9 @@ impl Value for Division {
     }
 }
 #[derive(Debug)]
+/// A [`MetaObject`] capable of dividing two [`Integer`]s
+///
+/// [`MetaObject`]: ../machine/trait.MetaObject.html
 pub struct DivisionMeta;
 
 impl MetaObject for DivisionMeta {
