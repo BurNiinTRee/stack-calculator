@@ -34,6 +34,12 @@ impl Token {
     }
 }
 
+impl ::std::fmt::Display for Token {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        ::std::fmt::Display::fmt(&self.0, f)
+    }
+}
+
 /// A Stack on which [`Token`]s can be pushed on.
 #[derive(Debug)]
 pub struct Stack(Vec<Token>);
@@ -56,8 +62,17 @@ impl Stack {
     }
 }
 
+impl ::std::fmt::Display for Stack {
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        for t in &self.0 {
+            write!(f, "{} ", t)?;
+        }
+        Ok(())
+    }
+}
+
 /// Represents a `Value` that can be turned into a [`Token`]
-pub trait Value: Downcast + ::std::fmt::Debug + Sync + Send {
+pub trait Value: Downcast + ::std::fmt::Debug + ::std::fmt::Display + Sync + Send {
     /// Gives the Value the opportunity to modify the [`Stack`] to its liking.
     /// If the `Value` performs no modifications it shall return `Err(Error::NotCallable)`
     /// and not try to push itself onto the [`Stack`] again, as this will lead to an infinite loop.
@@ -116,5 +131,21 @@ impl Parser {
             .rev()
             .filter_map(|object| object.try_parse(input))
             .next()
+    }
+}
+
+impl Type for Parser {
+    fn parse_hint(&self) -> Regex {
+        let mut re_string = String::new();
+        for type_object in &self.objects {
+            re_string.push('(');
+            re_string.push_str(type_object.parse_hint().as_str());
+            re_string.push_str(")|");
+        }
+        re_string.pop();
+        Regex::new(&re_string).unwrap()
+    }
+    fn try_parse(&self, input: &str) -> Option<Token> {
+        Parser::try_parse(self, input)
     }
 }

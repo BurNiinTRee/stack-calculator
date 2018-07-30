@@ -5,6 +5,7 @@
 
 use machine::*;
 use regex::Regex;
+use std::fmt;
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 struct Integer(pub i64);
@@ -14,6 +15,12 @@ impl Value for Integer {
         Err(Error::NotCallable {
             token: Token::new(Integer(self.0)),
         })
+    }
+}
+
+impl fmt::Display for Integer {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", self.0)
     }
 }
 
@@ -54,6 +61,12 @@ impl Value for Addition {
     }
 }
 
+impl fmt::Display for Addition {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "+")
+    }
+}
+
 #[derive(Debug)]
 /// A [`Type`] capable of adding two [`Integer`]s
 ///
@@ -90,6 +103,13 @@ impl Value for Substraction {
         Ok(())
     }
 }
+
+impl fmt::Display for Substraction {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "-")
+    }
+}
+
 #[derive(Debug)]
 /// A [`Type`] capable of substracting two [`Integer`]s
 ///
@@ -126,6 +146,13 @@ impl Value for Multiplication {
         Ok(())
     }
 }
+
+impl fmt::Display for Multiplication {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "*")
+    }
+}
+
 #[derive(Debug)]
 /// A [`Type`] capable of multiplying two [`Integer`]s
 ///
@@ -161,6 +188,13 @@ impl Value for Division {
         Ok(())
     }
 }
+
+impl fmt::Display for Division {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "/")
+    }
+}
+
 #[derive(Debug)]
 /// A [`Type`] capable of dividing two [`Integer`]s
 ///
