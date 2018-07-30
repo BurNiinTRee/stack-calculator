@@ -19,7 +19,7 @@ struct Opt {
 fn main() -> Result<(), Error> {
     let opts = Opt::from_args();
     println!("{:?}", opts);
-    let mut stack = parse(::std::fs::File::open(opts.file)?)?;
+    let mut stack = exec(::std::fs::File::open(opts.file)?)?;
     println!("{:?}", stack);
     println!("{:?}", stack.pop());
     Ok(())
@@ -27,19 +27,23 @@ fn main() -> Result<(), Error> {
 
 use std::io::Read;
 
-fn parse<I: Read>(mut i: I) -> Result<Stack, Error> {
+fn exec<I: Read>(mut i: I) -> Result<Stack, Error> {
+    let mut parser = Parser::new();
+    parser.push(Box::new(AdditionMeta));
+    parser.push(Box::new(SubstractionMeta));
+    parser.push(Box::new(MultiplicationMeta));
+    parser.push(Box::new(DivisionMeta));
+    parser.push(Box::new(IntegerMeta));
     let mut stack = Stack::new();
     let mut input = String::new();
     i.read_to_string(&mut input)?;
     let words = input.split_whitespace();
     for word in words {
-        stack.push(match word {
-            "+" => Token::new(Addition),
-            "-" => Token::new(Substraction),
-            "*" => Token::new(Multiplication),
-            "/" => Token::new(Division),
-            num => Token::new(Integer(num.parse()?)),
-        })?;
+        stack.push(
+            parser
+                .try_parse(word)
+                .ok_or_else(|| failure::err_msg(format!("Couldn't parse {}", word)))?,
+        )?;
     }
     Ok(stack)
 }
