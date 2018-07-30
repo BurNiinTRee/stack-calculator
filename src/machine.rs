@@ -66,7 +66,7 @@ pub trait Value: Downcast + ::std::fmt::Debug + Sync + Send {
 
 impl_downcast!(Value);
 
-pub trait MetaObject: ::std::fmt::Debug {
+pub trait Type: ::std::fmt::Debug {
     /// Returns a `Regex`, that only matches a `str` if parsing it with `parse` would succeed
     fn parse_hint(&self) -> Regex;
     /// Parses `input` into a Token of this type
@@ -91,10 +91,10 @@ pub trait MetaObject: ::std::fmt::Debug {
 
 #[derive(Debug)]
 /// A parser, capable of turning str-representations of tokens into actual [`Token`]s.
-/// The [`MetaObject`] of each type of [`Token`], which should be available in the `Parser`
+/// The [`Type`] of each type of [`Token`], which should be available in the `Parser`
 /// have to be added to it before it can create such [`Token`]s.
 pub struct Parser {
-    objects: Vec<Box<dyn MetaObject>>,
+    objects: Vec<Box<dyn Type>>,
 }
 
 impl Parser {
@@ -104,9 +104,9 @@ impl Parser {
             objects: Vec::new(),
         }
     }
-    /// Adds a [`MetaObject`] to the `Parser`.
-    /// If the capabilities of multiple [`MetaObject`]s overlap, the newest one takes precedence.
-    pub fn push<M: MetaObject + 'static>(&mut self, object: M) {
+    /// Adds a [`Type`] to the `Parser`.
+    /// If the capabilities of multiple [`Type`]s overlap, the newest one takes precedence.
+    pub fn push<M: Type + 'static>(&mut self, object: M) {
         self.objects.push(Box::new(object));
     }
     /// Applies the `Parser` to an input, returning a [`Token`], which can be pushed onto a [`Stack`]

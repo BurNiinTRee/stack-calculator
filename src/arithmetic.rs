@@ -1,7 +1,7 @@
-//! This module contains [`MetaObject`]s for simple integer arithmetic,
+//! This module contains [`Type`]s for simple integer arithmetic,
 //! supporting addition, substraction, multiplication and division.
 //!
-//! [`MetaObject`]: ../machine/trait.MetaObject.html
+//! [`Type`]: ../machine/trait.Type.html
 
 use machine::*;
 use regex::Regex;
@@ -18,12 +18,12 @@ impl Value for Integer {
 }
 
 #[derive(Debug)]
-/// A [`MetaObject`] representing integers
+/// A [`Type`] representing integers
 ///
-/// [`MetaObject`]: ../machine/trait.MetaObject.html
+/// [`Type`]: ../machine/trait.Type.html
 pub struct IntegerMeta;
 
-impl MetaObject for IntegerMeta {
+impl Type for IntegerMeta {
     fn parse_hint(&self) -> Regex {
         Regex::new(r"^\d+$").unwrap()
     }
@@ -55,12 +55,12 @@ impl Value for Addition {
 }
 
 #[derive(Debug)]
-/// A [`MetaObject`] capable of adding two [`Integer`]s
+/// A [`Type`] capable of adding two [`Integer`]s
 ///
-/// [`MetaObject`]: ../machine/trait.MetaObject.html
+/// [`Type`]: ../machine/trait.Type.html
 pub struct AdditionMeta;
 
-impl MetaObject for AdditionMeta {
+impl Type for AdditionMeta {
     fn parse_hint(&self) -> Regex {
         Regex::new(r"^\+$").unwrap()
     }
@@ -91,12 +91,12 @@ impl Value for Substraction {
     }
 }
 #[derive(Debug)]
-/// A [`MetaObject`] capable of substracting two [`Integer`]s
+/// A [`Type`] capable of substracting two [`Integer`]s
 ///
-/// [`MetaObject`]: ../machine/trait.MetaObject.html
+/// [`Type`]: ../machine/trait.Type.html
 pub struct SubstractionMeta;
 
-impl MetaObject for SubstractionMeta {
+impl Type for SubstractionMeta {
     fn parse_hint(&self) -> Regex {
         Regex::new(r"^-$").unwrap()
     }
@@ -127,12 +127,12 @@ impl Value for Multiplication {
     }
 }
 #[derive(Debug)]
-/// A [`MetaObject`] capable of multiplying two [`Integer`]s
+/// A [`Type`] capable of multiplying two [`Integer`]s
 ///
-/// [`MetaObject`]: ../machine/trait.MetaObject.html
+/// [`Type`]: ../machine/trait.Type.html
 pub struct MultiplicationMeta;
 
-impl MetaObject for MultiplicationMeta {
+impl Type for MultiplicationMeta {
     fn parse_hint(&self) -> Regex {
         Regex::new(r"^\*$").unwrap()
     }
@@ -162,12 +162,12 @@ impl Value for Division {
     }
 }
 #[derive(Debug)]
-/// A [`MetaObject`] capable of dividing two [`Integer`]s
+/// A [`Type`] capable of dividing two [`Integer`]s
 ///
-/// [`MetaObject`]: ../machine/trait.MetaObject.html
+/// [`Type`]: ../machine/trait.Type.html
 pub struct DivisionMeta;
 
-impl MetaObject for DivisionMeta {
+impl Type for DivisionMeta {
     fn parse_hint(&self) -> Regex {
         Regex::new(r"^/$").unwrap()
     }
