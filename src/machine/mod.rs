@@ -87,8 +87,8 @@ impl Parser {
             objects: Vec::new(),
         }
     }
-    pub fn push(&mut self, object: Box<dyn MetaObject>) {
-        self.objects.push(object);
+    pub fn push<M: MetaObject + 'static>(&mut self, object: M) {
+        self.objects.push(Box::new(object));
     }
     pub fn try_parse(&self, input: &str) -> Option<Token> {
         self.objects

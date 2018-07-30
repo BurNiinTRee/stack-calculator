@@ -29,11 +29,11 @@ use std::io::Read;
 
 fn exec<I: Read>(mut i: I) -> Result<Stack, Error> {
     let mut parser = Parser::new();
-    parser.push(Box::new(AdditionMeta));
-    parser.push(Box::new(SubstractionMeta));
-    parser.push(Box::new(MultiplicationMeta));
-    parser.push(Box::new(DivisionMeta));
-    parser.push(Box::new(IntegerMeta));
+    parser.push(AdditionMeta);
+    parser.push(SubstractionMeta);
+    parser.push(MultiplicationMeta);
+    parser.push(DivisionMeta);
+    parser.push(IntegerMeta);
     let mut stack = Stack::new();
     let mut input = String::new();
     i.read_to_string(&mut input)?;
