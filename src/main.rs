@@ -41,7 +41,7 @@ fn exec_stdin<P: Parser>(mut stack: Stack, parser: P) -> Result<Stack, Error> {
         match readline {
             Ok(line) => {
                 for word in line.split_whitespace() {
-                    stack.push(match parser.try_parse(word) {
+                    stack.push(match parser.parse(word) {
                         Some(n) => n,
                         None => {
                             println!("Couldn't parse {}, ignoring", word);
@@ -71,7 +71,7 @@ fn exec_file<P: Parser, Path: AsRef<::std::path::Path>>(
     for line in input.lines() {
         for word in line?.split_whitespace() {
             let token = parser
-                .try_parse(word)
+                .parse(word)
                 .ok_or_else(|| failure::err_msg(format!("couldn't parse {}", word)))?;
             if debug {
                 println!("{:?}", token);

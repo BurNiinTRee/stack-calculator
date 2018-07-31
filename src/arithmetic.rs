@@ -37,12 +37,12 @@ impl fmt::Display for Pop {
 pub struct PopMeta;
 
 impl Parser for PopMeta {
-    fn parse_hint(&self) -> String {
-        r"pop".into()
-    }
-
-    fn parse(&self, _: &str) -> Token {
-        Token::new(Pop)
+    fn parse(&self, input: &str) -> Option<Token> {
+        if input == "pop" {
+            Some(Token::new(Pop))
+        } else {
+            None
+        }
     }
 }
 
@@ -70,11 +70,8 @@ impl fmt::Display for Integer {
 pub struct IntegerMeta;
 
 impl Parser for IntegerMeta {
-    fn parse_hint(&self) -> String {
-        r"^\d+$".into()
-    }
-    fn parse(&self, input: &str) -> Token {
-        Token::new(Integer(input.parse().unwrap()))
+    fn parse(&self, input: &str) -> Option<Token> {
+        input.parse().ok().map(|num| Token::new(Integer(num)))
     }
 }
 
@@ -113,11 +110,12 @@ impl fmt::Display for Addition {
 pub struct AdditionMeta;
 
 impl Parser for AdditionMeta {
-    fn parse_hint(&self) -> String {
-        r"^\+$".into()
-    }
-    fn parse(&self, _: &str) -> Token {
-        Token::new(Addition)
+    fn parse(&self, input: &str) -> Option<Token> {
+        if input == "+" {
+            Some(Token::new(Addition))
+        } else {
+            None
+        }
     }
 }
 
@@ -156,11 +154,12 @@ impl fmt::Display for Substraction {
 pub struct SubstractionMeta;
 
 impl Parser for SubstractionMeta {
-    fn parse_hint(&self) -> String {
-        r"^-$".into()
-    }
-    fn parse(&self, _: &str) -> Token {
-        Token::new(Substraction)
+    fn parse(&self, input: &str) -> Option<Token> {
+        if input == "-" {
+            Some(Token::new(Substraction))
+        } else {
+            None
+        }
     }
 }
 
@@ -199,11 +198,12 @@ impl fmt::Display for Multiplication {
 pub struct MultiplicationMeta;
 
 impl Parser for MultiplicationMeta {
-    fn parse_hint(&self) -> String {
-        r"^\*$".into()
-    }
-    fn parse(&self, _: &str) -> Token {
-        Token::new(Multiplication)
+    fn parse(&self, input: &str) -> Option<Token> {
+        if input == "*" {
+            Some(Token::new(Multiplication))
+        } else {
+            None
+        }
     }
 }
 #[derive(Debug)]
@@ -241,10 +241,49 @@ impl fmt::Display for Division {
 pub struct DivisionMeta;
 
 impl Parser for DivisionMeta {
-    fn parse_hint(&self) -> String {
-        r"^/$".into()
+    fn parse(&self, input: &str) -> Option<Token> {
+        if input == "/" {
+            Some(Token::new(Division))
+        } else {
+            None
+        }
     }
-    fn parse(&self, _: &str) -> Token {
-        Token::new(Division)
+}
+#[cfg(test)]
+mod tests {
+    use arithmetic::{Addition, Division, Integer, Multiplication, Substraction};
+    use machine::{Stack, Token};
+    #[test]
+    fn simple_addition() {
+        let mut s = Stack::new();
+        s.push(Token::new(Integer(4))).unwrap();
+        s.push(Token::new(Integer(5))).unwrap();
+        s.push(Token::new(Addition)).unwrap();
+        assert_eq!(Integer(9), *s.pop().unwrap().downcast().unwrap());
     }
+    #[test]
+    fn simple_multiplication() {
+        let mut s = Stack::new();
+        s.push(Token::new(Integer(4))).unwrap();
+        s.push(Token::new(Integer(5))).unwrap();
+        s.push(Token::new(Multiplication)).unwrap();
+        assert_eq!(Integer(20), *s.pop().unwrap().downcast().unwrap());
+    }
+    #[test]
+    fn simple_substraction() {
+        let mut s = Stack::new();
+        s.push(Token::new(Integer(4))).unwrap();
+        s.push(Token::new(Integer(5))).unwrap();
+        s.push(Token::new(Substraction)).unwrap();
+        assert_eq!(Integer(-1), *s.pop().unwrap().downcast().unwrap());
+    }
+    #[test]
+    fn simple_division() {
+        let mut s = Stack::new();
+        s.push(Token::new(Integer(20))).unwrap();
+        s.push(Token::new(Integer(5))).unwrap();
+        s.push(Token::new(Division)).unwrap();
+        assert_eq!(Integer(4), *s.pop().unwrap().downcast().unwrap());
+    }
+
 }

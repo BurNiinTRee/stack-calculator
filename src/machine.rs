@@ -1,5 +1,4 @@
 use downcast_rs::Downcast;
-use regex::Regex;
 
 #[derive(Debug, Fail)]
 /// Represents an Error
@@ -82,27 +81,8 @@ pub trait Value: Downcast + ::std::fmt::Debug + ::std::fmt::Display + Sync + Sen
 impl_downcast!(Value);
 
 pub trait Parser: ::std::fmt::Debug {
-    /// Returns a `String`, which contains a regular expression as defined in the regex crate,
-    /// that only matches a `str` if parsing it with `parse` would succeed
-    fn parse_hint(&self) -> String;
-    /// Parses `input` into a Token of this type
-    /// # Panics
-    /// Panics if the input can't be parsed into the associated type
-    fn parse(&self, input: &str) -> Token {
-        self.try_parse(input).unwrap()
-    }
-    /// Returns a parsed value by first matching the `str` with the `parse_hint`
-    /// and then parsing it with `parse`
-    /// # Panics
-    /// Panics if `parse_hint` approves of an input but parse doesn't
-    fn try_parse(&self, input: &str) -> Option<Token> {
-        let re = Regex::new(&self.parse_hint()).unwrap();
-        if re.is_match(input) {
-            Some(self.parse(input))
-        } else {
-            None
-        }
-    }
+    /// returns a Token
+    fn parse(&self, input: &str) -> Option<Token>;
 }
 
 #[derive(Debug)]
@@ -125,28 +105,14 @@ impl ParserAggregator {
     pub fn push<M: Parser + 'static>(&mut self, object: M) {
         self.objects.push(Box::new(object));
     }
-    /// Applies the `Parser` to an input, returning a [`Token`], which can be pushed onto a [`Stack`]
-    pub fn try_parse(&self, input: &str) -> Option<Token> {
-        self.objects
-            .iter()
-            .rev()
-            .filter_map(|object| object.try_parse(input))
-            .next()
-    }
 }
 
 impl Parser for ParserAggregator {
-    fn parse_hint(&self) -> String {
-        let mut re_string = String::new();
-        for type_object in &self.objects {
-            re_string.push('(');
-            re_string.push_str(type_object.parse_hint().as_str());
-            re_string.push_str(")|");
-        }
-        re_string.pop();
-        re_string
-    }
-    fn try_parse(&self, input: &str) -> Option<Token> {
-        ParserAggregator::try_parse(self, input)
+    fn parse(&self, input: &str) -> Option<Token> {
+        self.objects
+            .iter()
+            .rev()
+            .filter_map(|object| object.parse(input))
+            .next()
     }
 }
